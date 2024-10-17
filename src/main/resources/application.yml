@@ -1,0 +1,13 @@
+
+
+logging:
+  pattern:
+    console: ${LOG_PATTERN_CONSOLE:"%green(%d{HH:mm:ss.SSS}) %blue(%-5level) %red([%thread]) %yellow(%logger{15})- %msg%n)"}
+
+spring:
+  application:
+    name: ${SPRING_APP_NAME:springsection1}
+  security:
+    user:
+      name: ${SECURITY_USERNAME:null}
+      password: ${SECURITY_PASSWORD:1234}
