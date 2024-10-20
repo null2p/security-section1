@@ -1,4 +1,4 @@
-package com.securityex.section1;
+package com.securityex;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
