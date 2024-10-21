@@ -9,7 +9,3 @@ logging:
 spring:
   application:
     name: ${SPRING_APP_NAME:springsection1}
-  security:
-    user:
-      name: ${SECURITY_USERNAME:null}
-      password: ${SECURITY_PASSWORD:1234}
