@@ -1,5 +1,6 @@
 package com.securityex.config;
 
+import com.securityex.exception.CustomAccessDeniedHandler;
 import com.securityex.exception.CustomBasicAuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,11 +24,12 @@ public class ProjectSecurityProdConfig {
         http.requiresChannel(rcc -> rcc.anyRequest().requiresSecure())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((requests) -> requests
-                .requestMatchers("/myAccount", "/myBalance","/myCards").authenticated()
+                .requestMatchers("/myAccount", "/myBalance","/myCards", "/myLoans").authenticated()
                 .requestMatchers("/notices", "/contact","/register" ,"/error").permitAll()
         );
         http.formLogin(withDefaults());
         http.httpBasic(hbc -> hbc.authenticationEntryPoint(new CustomBasicAuthenticationEntryPoint()));
+        http.exceptionHandling(ehc -> ehc.accessDeniedHandler(new CustomAccessDeniedHandler()));
         return http.build();
     }
 
