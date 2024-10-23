@@ -17,3 +17,7 @@ spring:
     show-sql: ${JPA_SHOW_SQL:true}
     properties:
       hibernate.hibernate.format_sql: ${HIBERNATE_FORMAT_SQL:true}
+server:
+  servlet:
+    session:
+      timeout: ${SESSION_TIMEOUT:20m}
