@@ -11,10 +11,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-@Profile("!prod")
 @Component
 @RequiredArgsConstructor
-public class EasyBankUsernamePwdAuthenticationProvider implements AuthenticationProvider {
+@Profile("prod")
+public class EasyBankProdUsernamePwdAuthenticationProvider implements AuthenticationProvider {
 
     private final EasyBankUserDetailsService easyBankUserDetailsService;
     private final PasswordEncoder passwordEncoder;
@@ -25,7 +25,13 @@ public class EasyBankUsernamePwdAuthenticationProvider implements Authentication
         String password = authentication.getCredentials().toString();
 
         UserDetails userDetails = easyBankUserDetailsService.loadUserByUsername(username);
-        return new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());
+
+        if(passwordEncoder.matches(password, userDetails.getPassword())) {
+            return new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());
+        }
+        else {
+            throw new BadCredentialsException("비밀번호 틀림!");
+        }
     }
 
     @Override
