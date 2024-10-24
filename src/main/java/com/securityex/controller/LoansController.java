@@ -1,13 +1,28 @@
 package com.securityex.controller;
 
+import com.securityex.model.Loans;
+import com.securityex.repository.LoanRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
+@RequiredArgsConstructor
 public class LoansController {
 
+    private final LoanRepository loanRepository;
+
     @GetMapping("/myLoans")
-    public String getLoansDetails() {
-        return "DB에서 가져온 대출 정보들";
+    public List<Loans> getLoanDetails(@RequestParam long id) {
+        List<Loans> loans = loanRepository.findByCustomerIdOrderByStartDtDesc(id);
+        if (loans != null) {
+            return loans;
+        } else {
+            return null;
+        }
     }
+
 }

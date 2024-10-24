@@ -30,7 +30,7 @@ public class ProjectSecurityProdConfig {
                 .requiresChannel(rcc -> rcc.anyRequest().requiresSecure())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((requests) -> requests
-                .requestMatchers("/myAccount", "/myBalance","/myCards", "/myLoans").authenticated()
+                .requestMatchers("/myAccount", "/myBalance","/myCards", "/myLoans", "/user").authenticated()
                 .requestMatchers("/notices", "/contact","/register" ,"/error", "invalidSession").permitAll()
         );
         http.formLogin(withDefaults());
