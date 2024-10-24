@@ -1,12 +1,14 @@
 
-
 logging:
   pattern:
     console: ${LOG_PATTERN_CONSOLE:"%green(%d{HH:mm:ss.SSS}) %blue(%-5level) %red([%thread]) %yellow(%logger{15})- %msg%n)"}
   level:
-    org.springframework.security: trace
+    org.springframework.security: error
 
 spring:
+  config:
+    activate:
+      on-profile: prod
   application:
     name: ${SPRING_APP_NAME:springsection1}
   datasource:
@@ -14,13 +16,9 @@ spring:
     username: ${DATABASE_USERNAME:root}
     password: ${DATABASE_PASSWORD:root}
   jpa:
-    show-sql: ${JPA_SHOW_SQL:true}
+    show-sql: ${JPA_SHOW_SQL:false}
     properties:
-      hibernate.hibernate.format_sql: ${HIBERNATE_FORMAT_SQL:true}
-  config:
-    import: application-prod.yml
-  profiles:
-    active: prod
+      hibernate.hibernate.format_sql: ${HIBERNATE_FORMAT_SQL:false}
 server:
   servlet:
     session:
