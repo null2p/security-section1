@@ -49,6 +49,7 @@ public class ProjectSecurityConfig {
                 }))
                 .csrf(csrfConfig -> csrfConfig
                         .csrfTokenRequestHandler(csrfTokenRequestAttributeHandler)
+                        .ignoringRequestMatchers("/contact","/register")
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
                 .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
                 .sessionManagement(smc ->
@@ -58,7 +59,6 @@ public class ProjectSecurityConfig {
                                 .maximumSessions(3)
                                 .maxSessionsPreventsLogin(true))
                 .requiresChannel(rcc -> rcc.anyRequest().requiresInsecure())
-                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((requests) -> requests
                 .requestMatchers("/myAccount", "/myBalance","/myCards", "/myLoans", "/user").authenticated()
                 .requestMatchers("/notices", "/contact","/register" ,"/error", "invalidSession").permitAll()
