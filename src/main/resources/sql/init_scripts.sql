@@ -161,3 +161,17 @@ CREATE TABLE `contact_messages` (
                                     `create_dt` date DEFAULT NULL,
                                     PRIMARY KEY (`contact_id`)
 );
+
+CREATE TABLE authorities (
+    id int not null auto_increment,
+    customer_id int not null,
+    name varchar(50) not null,
+    primary key (id),
+    key customer_id (customer_id),
+    constraint authorities_ibfk_1 foreign key (customer_id) references customer (customer_id)
+);
+
+INSERT INTO authorities (customer_id, name) values (1, 'VIEWACCOUNT');
+INSERT INTO authorities (customer_id, name) values (1, 'VIEWCARDS');
+INSERT INTO authorities (customer_id, name) values (1, 'VIEWLOANS');
+INSERT INTO authorities (customer_id, name) values (1, 'VIEWBALANCE');

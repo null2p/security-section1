@@ -3,7 +3,6 @@ package com.securityex.config;
 import com.securityex.model.Customer;
 import com.securityex.repository.CustomerRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,8 +22,10 @@ public class EasyBankUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Customer customer = customerRepository.findByEmail(username).orElseThrow(() ->
                 new UsernameNotFoundException(username + " 유저 이름이 존재하지 않습니다."));
-        List<GrantedAuthority> grantedAuthorities = List.of(new SimpleGrantedAuthority(customer.getRole()));
+        List<SimpleGrantedAuthority> authorities = customer.getAuthorities()
+                .stream().map(authority -> new SimpleGrantedAuthority(authority.getName()))
+                .toList();
 
-        return new User(customer.getEmail(), customer.getPwd(), grantedAuthorities);
+        return new User(customer.getEmail(), customer.getPwd(), authorities);
     }
 }
