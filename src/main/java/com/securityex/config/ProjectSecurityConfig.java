@@ -60,8 +60,12 @@ public class ProjectSecurityConfig {
                                 .maxSessionsPreventsLogin(true))
                 .requiresChannel(rcc -> rcc.anyRequest().requiresInsecure())
                 .authorizeHttpRequests((requests) -> requests
-                .requestMatchers("/myAccount", "/myBalance","/myCards", "/myLoans", "/user").authenticated()
-                .requestMatchers("/notices", "/contact","/register" ,"/error", "invalidSession").permitAll()
+                        .requestMatchers("/myAccount").hasAuthority("VIEWACCOUNT")
+                        .requestMatchers("/myBalance").hasAnyAuthority("VIEWBALANCE", "VIEWACCOUNT")
+                        .requestMatchers("/myCards").hasAuthority("VIEWLOANS")
+                        .requestMatchers("/myLoans").hasAuthority("VIEWCARDS")
+                        .requestMatchers("/user").authenticated()
+                        .requestMatchers("/notices", "/contact","/register" ,"/error", "invalidSession").permitAll()
         );
 //        http.formLogin(flc -> flc.disable());
         http.formLogin(withDefaults());
