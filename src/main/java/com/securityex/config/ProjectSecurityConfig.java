@@ -60,10 +60,10 @@ public class ProjectSecurityConfig {
                                 .maxSessionsPreventsLogin(true))
                 .requiresChannel(rcc -> rcc.anyRequest().requiresInsecure())
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/myAccount").hasAuthority("VIEWACCOUNT")
-                        .requestMatchers("/myBalance").hasAnyAuthority("VIEWBALANCE", "VIEWACCOUNT")
-                        .requestMatchers("/myCards").hasAuthority("VIEWLOANS")
-                        .requestMatchers("/myLoans").hasAuthority("VIEWCARDS")
+                        .requestMatchers("/myAccount").hasRole("USER")
+                        .requestMatchers("/myBalance").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/myCards").hasRole("USER")
+                        .requestMatchers("/myLoans").hasRole("USER")
                         .requestMatchers("/user").authenticated()
                         .requestMatchers("/notices", "/contact","/register" ,"/error", "invalidSession").permitAll()
         );
