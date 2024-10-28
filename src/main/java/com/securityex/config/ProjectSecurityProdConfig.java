@@ -2,9 +2,7 @@ package com.securityex.config;
 
 import com.securityex.exception.CustomAccessDeniedHandler;
 import com.securityex.exception.CustomBasicAuthenticationEntryPoint;
-import com.securityex.filter.AuthoritiesLoggingAfterFilter;
-import com.securityex.filter.CsrfCookieFilter;
-import com.securityex.filter.RequestValidationBeforeFilter;
+import com.securityex.filter.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,6 +20,7 @@ import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 import static org.springframework.security.config.Customizer.withDefaults;
@@ -35,7 +34,6 @@ public class ProjectSecurityProdConfig {
         CsrfTokenRequestAttributeHandler csrfTokenRequestAttributeHandler = new CsrfTokenRequestAttributeHandler();
 
         http
-                .securityContext(contextConfig -> contextConfig.requireExplicitSave(false))
                 .cors(corsConfigurer ->  corsConfigurer.configurationSource(new CorsConfigurationSource() {
                     @Override
                     public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
@@ -44,6 +42,7 @@ public class ProjectSecurityProdConfig {
                         config.setAllowedMethods(Collections.singletonList("*"));
                         config.setAllowCredentials(true);
                         config.setAllowedHeaders(Collections.singletonList("*"));
+                        config.setExposedHeaders(Arrays.asList("Authorization"));
                         config.setMaxAge(3600L);
                         return null;
                     }
@@ -55,9 +54,11 @@ public class ProjectSecurityProdConfig {
                 .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
                 .addFilterBefore(new RequestValidationBeforeFilter(), BasicAuthenticationFilter.class)
                 .addFilterAfter(new AuthoritiesLoggingAfterFilter(), BasicAuthenticationFilter.class)
+                .addFilterAfter(new JWTTokenGeneratorFilter(), BasicAuthenticationFilter.class)
+                .addFilterBefore(new JWTTokenValidatorFilter(), BasicAuthenticationFilter.class)
                 .sessionManagement(smc ->
                         smc
-                                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                                 .invalidSessionUrl("/invalidSession")
                                 .maximumSessions(1)
                                 .maxSessionsPreventsLogin(true))

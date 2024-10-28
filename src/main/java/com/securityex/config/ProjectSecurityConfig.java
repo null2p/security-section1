@@ -3,13 +3,14 @@ package com.securityex.config;
 import com.securityex.exception.CustomAccessDeniedHandler;
 import com.securityex.exception.CustomBasicAuthenticationEntryPoint;
 import com.securityex.filter.CsrfCookieFilter;
+import com.securityex.filter.JWTTokenGeneratorFilter;
+import com.securityex.filter.JWTTokenValidatorFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.password.CompromisedPasswordChecker;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,6 +22,7 @@ import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 import static org.springframework.security.config.Customizer.withDefaults;
@@ -34,7 +36,6 @@ public class ProjectSecurityConfig {
         CsrfTokenRequestAttributeHandler csrfTokenRequestAttributeHandler = new CsrfTokenRequestAttributeHandler();
 
         http
-                .securityContext(contextConfig -> contextConfig.requireExplicitSave(false))
                 .cors(corsConfigurer ->  corsConfigurer.configurationSource(new CorsConfigurationSource() {
                     @Override
                     public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
@@ -43,6 +44,7 @@ public class ProjectSecurityConfig {
                         config.setAllowedMethods(Collections.singletonList("*"));
                         config.setAllowCredentials(true);
                         config.setAllowedHeaders(Collections.singletonList("*"));
+                        config.setExposedHeaders(Arrays.asList("Authorization"));
                         config.setMaxAge(3600L);
                         return null;
                     }
@@ -52,9 +54,11 @@ public class ProjectSecurityConfig {
                         .ignoringRequestMatchers("/contact","/register")
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
                 .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
+                .addFilterAfter(new JWTTokenGeneratorFilter(), BasicAuthenticationFilter.class)
+                .addFilterBefore(new JWTTokenValidatorFilter(), BasicAuthenticationFilter.class)
                 .sessionManagement(smc ->
                         smc
-                                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                                 .invalidSessionUrl("/invalidSession")
                                 .maximumSessions(3)
                                 .maxSessionsPreventsLogin(true))
