@@ -3,13 +3,13 @@ package com.securityex.config;
 import com.securityex.exception.CustomAccessDeniedHandler;
 import com.securityex.exception.CustomBasicAuthenticationEntryPoint;
 import com.securityex.filter.CsrfCookieFilter;
+import com.securityex.filter.RequestValidationBeforeFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.password.CompromisedPasswordChecker;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -52,6 +52,7 @@ public class ProjectSecurityProdConfig {
                         .ignoringRequestMatchers("/contact","/register")
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
                 .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
+                .addFilterBefore(new RequestValidationBeforeFilter(), BasicAuthenticationFilter.class)
                 .sessionManagement(smc ->
                         smc
                                 .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
