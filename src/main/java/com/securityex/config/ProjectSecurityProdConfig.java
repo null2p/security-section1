@@ -2,6 +2,7 @@ package com.securityex.config;
 
 import com.securityex.exception.CustomAccessDeniedHandler;
 import com.securityex.exception.CustomBasicAuthenticationEntryPoint;
+import com.securityex.filter.AuthoritiesLoggingAfterFilter;
 import com.securityex.filter.CsrfCookieFilter;
 import com.securityex.filter.RequestValidationBeforeFilter;
 import jakarta.servlet.http.HttpServletRequest;
@@ -53,6 +54,7 @@ public class ProjectSecurityProdConfig {
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
                 .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
                 .addFilterBefore(new RequestValidationBeforeFilter(), BasicAuthenticationFilter.class)
+                .addFilterAfter(new AuthoritiesLoggingAfterFilter(), BasicAuthenticationFilter.class)
                 .sessionManagement(smc ->
                         smc
                                 .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
