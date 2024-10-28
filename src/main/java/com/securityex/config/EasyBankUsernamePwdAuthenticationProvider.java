@@ -8,6 +8,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -16,7 +17,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class EasyBankUsernamePwdAuthenticationProvider implements AuthenticationProvider {
 
-    private final EasyBankUserDetailsService easyBankUserDetailsService;
+    private final UserDetailsService easyBankUserDetailsService;
     private final PasswordEncoder passwordEncoder;
 
     @Override
